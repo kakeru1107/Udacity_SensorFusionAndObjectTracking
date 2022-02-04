@@ -39,20 +39,10 @@ class Association:
         ############
         N = len(track_list)
         M = len(meas_list)
-        association_matrix = []
         
         # the following only works for at most one track and one measurement
-        self.association_matrix = np.matrix([]) # reset matrix
-        self.unassigned_tracks = [] # reset lists
-        self.unassigned_meas = []
-
-        if len(meas_list) > 0:
-            self.unassigned_meas = list(range(M))
-        if len(track_list) > 0:
-            self.unassigned_tracks = list(range(N))
-        if len(meas_list) > 0 and len(track_list) > 0: 
-            self.association_matrix = np.asmatrix(np.inf * np.ones((N,M)))
-            
+        self.association_matrix = np.asmatrix(np.inf * np.ones((N,M))) # reset matrix
+        
         # loop over all tracks and all measurements to set up association matrix                  
         for i, track in enumerate(track_list):
             for j, meas in enumerate(meas_list):
@@ -64,8 +54,6 @@ class Association:
         #we will finally assign them when calling get_closest_track_and_meas
         self.unassigned_tracks = np.arange(len(track_list)).tolist()
         self.unassigned_meas = np.arange(len(meas_list)).tolist()
-        
-        self.association_matrix = np.matrix(association_matrix)
         
         return
         ############
@@ -119,7 +107,7 @@ class Association:
             df = 1
             
         limit = chi2.ppf(params.gating_threshold, df)
-        if MHD <= limit:
+        if MHD < limit:
             return True
         else:
             return False

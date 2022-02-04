@@ -132,10 +132,6 @@ class Trackmanagement:
                 if meas_list[0].sensor.in_fov(track.x):
                     # your code goes here
                     track.score -= (1.0 / params.window)
-            else: # reduce score when no measurements are available
-                track.score -= (1.0 / params.window)
-            if track.score < 0:
-                track.score = 0.0 
 
         # delete old tracks
         for track in self.track_list:
@@ -177,12 +173,9 @@ class Trackmanagement:
         # - set track state to 'tentative' or 'confirmed'
         ############
         track.score += (1.0 / params.window)
-        if track.score > 1.0:
-            track.score = 1.0           
-        
-        if (track.state == 'tentative' and track.score >= params.confirmed_threshold):
+        if track.score >= params.confirmed_threshold:
             track.state = 'confirmed'
-        elif (track.state == 'initialized' and track.score >= params.tentative_threshold):
+        else:
             track.state = 'tentative'
         
         ############
